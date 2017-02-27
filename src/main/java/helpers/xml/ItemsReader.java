@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2017 Andrey Antipov. All Rights Reserved.
  */
-package helpers;
+package helpers.xml;
 
 import org.xml.sax.SAXException;
 import schema.Item;
@@ -22,10 +22,10 @@ import java.util.Optional;
 /**
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-27)
  */
-public final class XMLItemsReader {
+public final class ItemsReader {
     private static final String SCHEMA_NAME = "items.xsd";
 
-    private static final ClassLoader CLASS_LOADER = XMLItemsReader.class.getClassLoader();
+    private static final ClassLoader CLASS_LOADER = ItemsReader.class.getClassLoader();
 
     private static final Schema SCHEMA;
 
@@ -57,7 +57,7 @@ public final class XMLItemsReader {
         }
     }
 
-    private XMLItemsReader() {
+    private ItemsReader() {
     }
 
     private static Items unmarshal(InputStream inputStream) throws JAXBException {

@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-26)
@@ -46,5 +47,27 @@ public class Player {
 
     public void setOwnedItems(List<OwnedItem> ownedItems) {
         this.ownedItems = ownedItems;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player)) return false;
+        Player player = (Player) o;
+        return Objects.equals(name, player.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                ", money=" + money +
+                ", ownedItems=" + ownedItems +
+                '}';
     }
 }

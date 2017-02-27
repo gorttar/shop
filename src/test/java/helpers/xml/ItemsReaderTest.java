@@ -1,4 +1,4 @@
-package helpers;
+package helpers.xml;
 
 import static java.util.Arrays.asList;
 
@@ -10,12 +10,12 @@ import schema.Item;
 /**
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-27)
  */
-public class XMLItemsReaderTest {
+public class ItemsReaderTest {
 
     @Test
     public void testReadItems_correct() throws Exception {
         Assert.assertEquals(
-                XMLItemsReader.readItems("helpers/correct_items.xml"),
+                ItemsReader.readItems("helpers/correct_items.xml"),
                 asList(new Item("item1", 1), new Item("item2", 2)));
     }
 
@@ -32,6 +32,6 @@ public class XMLItemsReaderTest {
 
     @Test(dataProvider = "testReadItems_incorrect", expectedExceptions = IllegalArgumentException.class)
     public void testReadItems_incorrect(String resourceName) throws Exception {
-        XMLItemsReader.readItems(resourceName);
+        ItemsReader.readItems(resourceName);
     }
 }
