@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="items.xsd">
-    <item name="Doomhammer" price="500"/>
-    <item name="Fire War Axe" price="100"/>
-    <item name="Stormshield" price="300"/>
-    <item name="Harlequin Crest" price="200"/>
+		xsi:noNamespaceSchemaLocation="items.xsd">
+	<item name="Doomhammer" price="500"/>
+	<item name="Fire War Axe" price="100"/>
+	<item name="Stormshield" price="300"/>
+	<item name="Harlequin Crest" price="200"/>
 </items>

@@ -3,13 +3,19 @@
     <xs:element name="items">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
-                    <xs:complexType>
-                        <xs:attribute name="name" type="xs:string"/>
-                        <xs:attribute name="price" type="xs:positiveInteger"/>
-                    </xs:complexType>
-                </xs:element>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="item"/>
             </xs:sequence>
         </xs:complexType>
+		<xs:unique name="UniqueItemName">
+			<xs:selector xpath="item"/>
+			<xs:field xpath="@name"/>
+		</xs:unique>
     </xs:element>
+
+	<xs:element name="item">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="price" type="xs:positiveInteger" use="required"/>
+		</xs:complexType>
+	</xs:element>
 </xs:schema>

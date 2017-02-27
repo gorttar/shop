@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="../../../main/resources/items.xsd">
+	<item name="item1" prise="1"/>
+	<item name="item2" price="2"/>
+</items>
