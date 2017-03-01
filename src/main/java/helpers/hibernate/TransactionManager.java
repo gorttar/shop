@@ -3,8 +3,8 @@
  */
 package helpers.hibernate;
 
-import function.exceptional.EC;
-import function.exceptional.EF;
+import function.exceptional.EConsumer;
+import function.exceptional.EFunction;
 
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
@@ -24,11 +24,11 @@ public final class TransactionManager {
         this.entityManagerFactory = entityManagerFactory;
     }
 
-    public void transactionAccept(EC<? super EntityManager> transactionBody) {
+    public void transactionAccept(EConsumer<? super EntityManager> transactionBody) {
         transactionApply(transactionBody);
     }
 
-    public <T> T transactionApply(EF<? super EntityManager, ? extends T> transactionBody) {
+    public <T> T transactionApply(EFunction<? super EntityManager, ? extends T> transactionBody) {
         final EntityManager em = entityManagerFactory.createEntityManager();
         final EntityTransaction tx = em.getTransaction();
         final T result;
@@ -36,8 +36,11 @@ public final class TransactionManager {
             tx.begin();
             result = transactionBody.uApply(em);
             tx.commit();
+            // unchecked throwable instances can be rethrown as is
+        } catch (RuntimeException | Error e) {
+            throw e;
+            // checked ones should be wrapped to illegal state exception
         } catch (Throwable t) {
-            tx.rollback();
             throw new IllegalStateException("Exception during transaction execution", t);
         } finally {
             em.close();

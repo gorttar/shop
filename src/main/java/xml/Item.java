@@ -1,4 +1,4 @@
-package schema;
+package xml;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;

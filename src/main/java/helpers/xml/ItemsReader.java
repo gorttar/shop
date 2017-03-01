@@ -4,8 +4,8 @@
 package helpers.xml;
 
 import org.xml.sax.SAXException;
-import schema.Item;
-import schema.Items;
+import xml.Item;
+import xml.Items;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;

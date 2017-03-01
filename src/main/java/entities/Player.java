@@ -20,7 +20,7 @@ public class Player {
     private String name;
 
     @Column
-    private long money;
+    private int money;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<OwnedItem> ownedItems;
@@ -33,11 +33,11 @@ public class Player {
         this.name = name;
     }
 
-    public long getMoney() {
+    public int getMoney() {
         return money;
     }
 
-    public void setMoney(long money) {
+    public void setMoney(int money) {
         this.money = money;
     }
 

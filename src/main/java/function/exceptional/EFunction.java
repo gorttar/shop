@@ -9,7 +9,7 @@ import java.util.function.Function;
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-28)
  */
 @FunctionalInterface
-public interface EF<A, Rt> extends Function<A, Rt> {
+public interface EFunction<A, Rt> extends Function<A, Rt> {
     Rt uApply(A a) throws Throwable;
 
     @Override

@@ -5,7 +5,7 @@ import static java.util.Arrays.asList;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import schema.Item;
+import xml.Item;
 
 /**
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-27)
