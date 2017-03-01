@@ -30,9 +30,10 @@ public final class TransactionManager {
 
     public <T> T transactionApply(EFunction<? super EntityManager, ? extends T> transactionBody) {
         final EntityManager em = entityManagerFactory.createEntityManager();
-        final EntityTransaction tx = em.getTransaction();
         final T result;
+        // shouldn't use try-with-resources because EntityManager is not subclass of AutoCloseable
         try {
+            final EntityTransaction tx = em.getTransaction();
             tx.begin();
             result = transactionBody.uApply(em);
             tx.commit();
@@ -42,7 +43,6 @@ public final class TransactionManager {
             // checked ones should be wrapped to illegal state exception
         } catch (Throwable t) {
             throw new IllegalStateException("Exception during transaction execution", t);
-            // shouldn't use try-with-resources because EntityManager is not subclass of AutoCloseable
         } finally {
             em.close();
         }
