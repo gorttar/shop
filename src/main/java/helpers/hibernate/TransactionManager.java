@@ -40,7 +40,7 @@ public final class TransactionManager {
             // unchecked throwable instances can be rethrown as is
         } catch (RuntimeException | Error e) {
             throw e;
-            // checked ones should be wrapped to illegal state exception
+            // checked ones should be wrapped to IllegalStateException
         } catch (Throwable t) {
             throw new IllegalStateException("Exception during transaction execution", t);
         } finally {
