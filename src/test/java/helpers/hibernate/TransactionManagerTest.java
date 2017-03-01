@@ -9,7 +9,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 /**
@@ -54,11 +56,16 @@ public class TransactionManagerTest {
 
     @BeforeMethod
     public void setUp() throws Exception {
-        TEST_OBJECT.transactionAccept(
-                em -> {
-                    em.createNativeQuery("delete from player").executeUpdate();
-                    em.persist(TEST_PLAYER_1);
-                });
+        final EntityManager em = SHOP.createEntityManager();
+        try {
+            final EntityTransaction tx = em.getTransaction();
+            tx.begin();
+            em.createNativeQuery("delete from player").executeUpdate();
+            em.persist(TEST_PLAYER_1);
+            tx.commit();
+        } finally {
+            em.close();
+        }
     }
 
     private static Player createTestPlayer(String name) {

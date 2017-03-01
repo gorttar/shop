@@ -42,6 +42,7 @@ public final class TransactionManager {
             // checked ones should be wrapped to illegal state exception
         } catch (Throwable t) {
             throw new IllegalStateException("Exception during transaction execution", t);
+            // shouldn't use try-with-resources because EntityManager is not subclass of AutoCloseable
         } finally {
             em.close();
         }
