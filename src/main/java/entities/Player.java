@@ -70,4 +70,11 @@ public class Player {
                 ", ownedItems=" + ownedItems +
                 '}';
     }
+
+    public static Player create(String name, int money) {
+        final Player player = new Player();
+        player.setName(name);
+        player.setMoney(money);
+        return player;
+    }
 }

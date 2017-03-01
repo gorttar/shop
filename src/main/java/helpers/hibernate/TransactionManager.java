@@ -32,17 +32,14 @@ public final class TransactionManager {
         final EntityManager em = entityManagerFactory.createEntityManager();
         final T result;
         // shouldn't use try-with-resources because EntityManager is not subclass of AutoCloseable
+        final EntityTransaction tx = em.getTransaction();
         try {
-            final EntityTransaction tx = em.getTransaction();
             tx.begin();
-            result = transactionBody.uApply(em);
+            result = transactionBody.apply(em);
             tx.commit();
-            // unchecked throwable instances can be rethrown as is
-        } catch (RuntimeException | Error e) {
+        } catch (RuntimeException e) {
+            tx.rollback();
             throw e;
-            // checked ones should be wrapped to IllegalStateException
-        } catch (Throwable t) {
-            throw new IllegalStateException("Exception during transaction execution", t);
         } finally {
             em.close();
         }
