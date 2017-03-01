@@ -3,6 +3,8 @@ package helpers.hibernate;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import entities.Player;
@@ -21,9 +23,9 @@ import java.util.List;
 /**
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-28)
  */
-public class TransactionManagerTest {
+public class SessionManagerTest {
     private static final EntityManagerFactory SHOP = Persistence.createEntityManagerFactory("shop");
-    private static final TransactionManager TEST_OBJECT = new TransactionManager(SHOP);
+    private static final SessionManager TEST_OBJECT = new SessionManager(SHOP);
     private static final Player TEST_PLAYER_1 = Player.create("p1", 0);
     private static final String TEST_ERROR_MESSAGE = "test error";
 
@@ -48,9 +50,9 @@ public class TransactionManagerTest {
     }
 
     @Test
-    public void testTransactionApply_success() throws Exception {
+    public void testApplyWithTransaction_success() throws Exception {
         final Player player = Player.create("p2", 0);
-        final List<Player> actual = TEST_OBJECT.transactionApply(
+        final List<Player> actual = TEST_OBJECT.applyWithTransaction(
                 em -> {
                     em.persist(player);
                     return em.createQuery("select p from Player p order by p.name", Player.class).getResultList();
@@ -61,9 +63,9 @@ public class TransactionManagerTest {
     }
 
     @Test
-    public void testTransactionApply_fail() throws Exception {
+    public void testApplyWithTransaction_fail() throws Exception {
         final Player player = Player.create("p2", 0);
-        ThrowingRunnable toCheck = () -> TEST_OBJECT.transactionApply(
+        ThrowingRunnable toCheck = () -> TEST_OBJECT.applyWithTransaction(
                 em -> {
                     em.persist(player);
                     em.createQuery("select p from Player p", Player.class).getResultList();
@@ -72,9 +74,7 @@ public class TransactionManagerTest {
         try {
             toCheck.run();
             fail("Should throw RuntimeException");
-        } catch (RuntimeException e) {
-            assertEquals(TestException.class, e.getCause().getClass());
-            assertEquals(e.getCause().getMessage(), TEST_ERROR_MESSAGE);
+        } catch (RuntimeException __) {
             assertNoNewPlayers();
         } catch (Throwable __) {
             fail("Should throw RuntimeException");
@@ -82,17 +82,17 @@ public class TransactionManagerTest {
     }
 
     @Test
-    public void testTransactionAccept_success() throws Exception {
+    public void testAcceptWithTransaction_success() throws Exception {
         final Player player = Player.create("p2", 0);
-        TEST_OBJECT.transactionAccept(em -> em.persist(player));
+        TEST_OBJECT.acceptWithTransaction(em -> em.persist(player));
         assertEquals(
                 SHOP.createEntityManager().createQuery("select p from Player p order by p.name", Player.class).getResultList(),
                 asList(TEST_PLAYER_1, player));
     }
 
     @Test
-    public void testTransactionAccept_fail() throws Exception {
-        ThrowingRunnable toCheck = () -> TEST_OBJECT.transactionAccept(
+    public void testAcceptWithTransaction_fail() throws Exception {
+        ThrowingRunnable toCheck = () -> TEST_OBJECT.acceptWithTransaction(
                 em -> {
                     final Player player = Player.create("p2", 0);
                     em.persist(player);
@@ -102,10 +102,36 @@ public class TransactionManagerTest {
         try {
             toCheck.run();
             fail("Should throw RuntimeException");
-        } catch (RuntimeException e) {
-            assertEquals(TestException.class, e.getCause().getClass());
-            assertEquals(e.getCause().getMessage(), TEST_ERROR_MESSAGE);
+        } catch (RuntimeException __) {
             assertNoNewPlayers();
+        } catch (Throwable __) {
+            fail("Should throw RuntimeException");
+        }
+    }
+
+    @Test
+    public void testApplyWithSession_success() throws Exception {
+        final EntityManager exposed = TEST_OBJECT.applyWithSession(
+                em -> {
+                    assertTrue(em.isOpen());
+                    return em;
+                });
+        assertFalse(exposed.isOpen());
+    }
+
+    @Test
+    public void testApplyWithSession_fail() throws Exception {
+        EntityManager[] exposed = new EntityManager[1];
+        try {
+            TEST_OBJECT.applyWithSession(
+                    em -> {
+                        assertTrue(em.isOpen());
+                        exposed[0] = em;
+                        throw new TestException(TEST_ERROR_MESSAGE);
+                    });
+            fail("Should throw RuntimeException");
+        } catch (RuntimeException __) {
+            assertFalse(exposed[0].isOpen());
         } catch (Throwable __) {
             fail("Should throw RuntimeException");
         }
