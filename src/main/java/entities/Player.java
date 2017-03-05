@@ -8,8 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-26)
@@ -45,6 +47,7 @@ public class Player {
         return ownedItems;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void setOwnedItems(List<OwnedItem> ownedItems) {
         this.ownedItems = ownedItems;
     }
@@ -71,10 +74,15 @@ public class Player {
                 '}';
     }
 
-    public static Player create(String name, int money) {
+    public static Player create(String name, int money, Item... itemsToOwn) {
         final Player player = new Player();
         player.setName(name);
         player.setMoney(money);
+        player.setOwnedItems(
+                Arrays
+                        .stream(itemsToOwn)
+                        .map(item -> OwnedItem.create(player, item))
+                        .collect(Collectors.toList()));
         return player;
     }
 }

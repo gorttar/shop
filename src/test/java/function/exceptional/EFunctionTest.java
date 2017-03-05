@@ -45,7 +45,7 @@ public class EFunctionTest {
             testObject.apply(2);
             fail("Should throw RuntimeException");
         } catch (RuntimeException e) {
-            assertTrue(Thread.interrupted());
+            assertTrue(Thread.interrupted(), "Thread's state should be 'interrupted'");
             assertEquals(InterruptedException.class, e.getCause().getClass());
             assertEquals(e.getCause().getMessage(), TEST_ERROR_MESSAGE);
         } catch (Throwable __) {

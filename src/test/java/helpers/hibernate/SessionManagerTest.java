@@ -41,7 +41,7 @@ public class SessionManagerTest {
         try {
             final EntityTransaction tx = em.getTransaction();
             tx.begin();
-            em.createNativeQuery("delete from player").executeUpdate();
+            em.createNativeQuery("delete from Player").executeUpdate();
             em.persist(TEST_PLAYER_1);
             tx.commit();
         } finally {
