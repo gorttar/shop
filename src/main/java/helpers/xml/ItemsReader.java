@@ -14,12 +14,13 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.File;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
 /**
+ * helper to read item templates from xml resource
+ *
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-27)
  */
 public final class ItemsReader {
@@ -60,11 +61,14 @@ public final class ItemsReader {
     private ItemsReader() {
     }
 
-    private static Items unmarshal(InputStream inputStream) throws JAXBException {
-        return (Items) UNMARSHALLER.unmarshal(inputStream);
-    }
-
-    public static List<Item> readItems(String resourceName) {
+    /**
+     * tries to parse items from xml resource
+     *
+     * @param resourceName name of resource to be parsed
+     * @return list of items parsed from resource
+     * @throws IllegalArgumentException if parse failed
+     */
+    public static List<Item> readItems(String resourceName) throws IllegalArgumentException {
         try {
             return ((Items) UNMARSHALLER.unmarshal(CLASS_LOADER.getResourceAsStream(resourceName))).getItem();
         } catch (Exception e) {

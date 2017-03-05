@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * service to serve shop's operations
+ *
  * @author Andrey Antipov (gorttar@gmail.com) (2017-03-02)
  */
 public class ShopService {
@@ -26,6 +28,12 @@ public class ShopService {
         this.sessionManager = requireNonNull(sessionManager);
     }
 
+    /**
+     * searches for player with given name
+     *
+     * @param name of player to be found
+     * @return search result wrapped to {@link Optional}
+     */
     public Optional<Player> findPlayer(@Nonnull String name) {
         return sessionManager.applyWithSession(em -> _findPlayer(name, em));
     }
@@ -39,6 +47,12 @@ public class ShopService {
                 .findFirst();
     }
 
+    /**
+     * searches for item with given name
+     *
+     * @param name of item to be found
+     * @return search result wrapped to {@link Optional}
+     */
     public Optional<Item> findItem(@Nonnull String name) {
         return sessionManager.applyWithSession(em -> _findItem(name, em));
     }
@@ -52,6 +66,9 @@ public class ShopService {
                 .findFirst();
     }
 
+    /**
+     * @return list of items available in shop
+     */
     public List<Item> listItems() {
         return sessionManager.applyWithSession(
                 em -> em
@@ -59,7 +76,15 @@ public class ShopService {
                         .getResultList());
     }
 
-    public boolean buy(@Nonnull Player player, @Nonnull Item item) {
+    /**
+     * buy given item by given player
+     *
+     * @param player which wants to buy item
+     * @param item   to buy
+     * @return true if item was bought by player and false otherwise
+     * @throws IllegalStateException in case of wrong arguments
+     */
+    public boolean buy(@Nonnull Player player, @Nonnull Item item) throws IllegalStateException {
         return sessionManager.applyWithTransaction(
                 em -> {
                     final Player reloadedPlayer = _findPlayer(requireNonNull(player).getName(), em)
@@ -82,7 +107,14 @@ public class ShopService {
                 });
     }
 
-    public void sell(@Nonnull Player player, @Nonnull Item item) {
+    /**
+     * sell given item by given player
+     *
+     * @param player which wants to sell item
+     * @param item   to sell
+     * @throws IllegalStateException in case of wrong arguments
+     */
+    public void sell(@Nonnull Player player, @Nonnull Item item) throws IllegalStateException {
         requireNonNull(item);
         sessionManager.acceptWithTransaction(
                 em -> {

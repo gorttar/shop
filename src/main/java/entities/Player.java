@@ -14,6 +14,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
+ * entity to represent player with access to shop
+ *
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-26)
  */
 @Entity
@@ -74,6 +76,14 @@ public class Player {
                 '}';
     }
 
+    /**
+     * factory method to create new {@link Player}
+     *
+     * @param name       of created player
+     * @param money      of created player
+     * @param itemsToOwn by created player
+     * @return new {@link Player} for given name, money and itemsToOwn
+     */
     public static Player create(String name, int money, Item... itemsToOwn) {
         final Player player = new Player();
         player.setName(name);
@@ -81,6 +91,7 @@ public class Player {
         player.setOwnedItems(
                 Arrays
                         .stream(itemsToOwn)
+                        .distinct()
                         .map(item -> OwnedItem.create(player, item))
                         .collect(Collectors.toList()));
         return player;

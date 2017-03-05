@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import java.util.Objects;
 
 /**
+ * entity to represent shop's item
+ *
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-26)
  */
 @Entity
@@ -35,13 +37,6 @@ public class Item {
         this.price = price;
     }
 
-    public static Item create(String name, int price) {
-        final Item item = new Item();
-        item.setName(name);
-        item.setPrice(price);
-        return item;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,5 +57,19 @@ public class Item {
                 "name='" + name + '\'' +
                 ", price=" + price +
                 '}';
+    }
+
+    /**
+     * factory method to create new {@link Item}
+     *
+     * @param name  of created item
+     * @param price of created item
+     * @return new {@link Item} for given name and price
+     */
+    public static Item create(String name, int price) {
+        final Item item = new Item();
+        item.setName(name);
+        item.setPrice(price);
+        return item;
     }
 }

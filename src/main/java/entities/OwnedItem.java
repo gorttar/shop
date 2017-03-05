@@ -11,6 +11,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
+ * entity to represent ownership relation between item and player
+ *
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-26)
  */
 @Entity
@@ -42,13 +44,6 @@ public class OwnedItem {
         this.item = item;
     }
 
-    public static OwnedItem create(Player player, Item item) {
-        final OwnedItem ownedItem = new OwnedItem();
-        ownedItem.setOwner(player);
-        ownedItem.setItem(item);
-        return ownedItem;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,5 +62,19 @@ public class OwnedItem {
     @Override
     public String toString() {
         return item.toString();
+    }
+
+    /**
+     * factory method to create new {@link OwnedItem}
+     *
+     * @param owner of item
+     * @param item  owned by owner
+     * @return new {@link OwnedItem} for given owner and item
+     */
+    public static OwnedItem create(Player owner, Item item) {
+        final OwnedItem ownedItem = new OwnedItem();
+        ownedItem.setOwner(owner);
+        ownedItem.setItem(item);
+        return ownedItem;
     }
 }

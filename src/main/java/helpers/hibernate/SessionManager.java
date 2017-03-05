@@ -13,6 +13,8 @@ import javax.persistence.EntityTransaction;
 import java.util.Objects;
 
 /**
+ * helper to deal with {@link EntityManager} sessions both transactional and not
+ *
  * @author Andrey Antipov (gorttar@gmail.com) (2017-02-28)
  */
 public class SessionManager {
@@ -24,14 +26,33 @@ public class SessionManager {
         this.entityManagerFactory = entityManagerFactory;
     }
 
+    /**
+     * preforms transactional operation represented by transaction body
+     *
+     * @param transactionBody to be performed under {@link EntityTransaction}
+     */
     public void acceptWithTransaction(EConsumer<? super EntityManager> transactionBody) {
         applyWithTransaction(transactionBody);
     }
 
+    /**
+     * evaluates transactional function represented by transaction body and returns it's result
+     *
+     * @param transactionBody to be evaluated under {@link EntityTransaction}
+     * @param <T>             result type
+     * @return transaction body evaluation result
+     */
     public <T> T applyWithTransaction(EFunction<? super EntityManager, ? extends T> transactionBody) {
         return applyWithSession(withTransaction(transactionBody));
     }
 
+    /**
+     * evaluates function represented by body and returns it's result
+     *
+     * @param body to be evaluated with {@link EntityManager} as argument
+     * @param <T>  result type
+     * @return body evaluation result
+     */
     public <T> T applyWithSession(EFunction<? super EntityManager, ? extends T> body) {
         final EntityManager em = entityManagerFactory.createEntityManager();
         final T result;
@@ -44,13 +65,20 @@ public class SessionManager {
         return result;
     }
 
-    private static <T> EFunction<EntityManager, T> withTransaction(EFunction<? super EntityManager, ? extends T> transactionBody) {
+    /**
+     * decorates given body with transaction handling
+     *
+     * @param body to be decorated
+     * @param <T>  decorated function's result type
+     * @return decorated function with transaction handling (transactional function)
+     */
+    private static <T> EFunction<EntityManager, T> withTransaction(EFunction<? super EntityManager, ? extends T> body) {
         return em -> {
             final T result;
             final EntityTransaction tx = em.getTransaction();
             try {
                 tx.begin();
-                result = transactionBody.apply(em);
+                result = body.apply(em);
                 tx.commit();
             } catch (RuntimeException e) {
                 tx.rollback();
