@@ -132,4 +132,11 @@ public class Item {
                 '}';
     }
 
+    /**
+     * @return {@link entities.Item} with same name and price as this item
+     */
+    public entities.Item toEntity() {
+        return entities.Item.create(this.name, this.price);
+    }
+
 }
